@@ -111,7 +111,7 @@ def dibujar(screen, listaDePalabrasUsuario, palabraUsuario, puntos, intentos, se
         x = 0
         for letra in abc:
             color = COLOR_LETRAS
-            screen.blit(defaultFont.render(letra, 1, color), (20 + x, ALTO/2 + y))
+            screen.blit(defaultFont.render(letra, 1, color), (10 + x, ALTO/1.5 + y))
             x += TAMANNO_LETRA
         y += TAMANNO_LETRA
 
