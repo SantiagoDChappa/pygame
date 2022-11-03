@@ -1,5 +1,6 @@
 #! /usr/bin/env python
 import os, random, sys, math
+from turtle import back
 
 import pygame
 from pygame.locals import *
@@ -14,11 +15,14 @@ def main():
     #Centrar la ventana y despues inicializar pygame
     os.environ["SDL_VIDEO_CENTERED"] = "1"
     pygame.init()
-    #pygame.mixer.init()
+    pygame.mixer.init()
+    pygame.mixer.music.load("sonidos/music.wav")
+    #pygame.mixer.music.play(3)
 
     #Preparar la ventana
     pygame.display.set_caption("La palabra escondida...")
     screen = pygame.display.set_mode((ANCHO, ALTO))
+    background = pygame.image.load("imagenes/bkImage.png")
 
     #tiempo total del juego
     gameClock = pygame.time.Clock()
@@ -34,6 +38,8 @@ def main():
     incorrectas = []
     casi = []
     gano = False
+
+    
 
     archivo= open("lemario.txt","r")
     #lectura del diccionario
@@ -71,7 +77,7 @@ def main():
                     palabraUsuario += '\n'
                     if buscarPalabra(listaPalabrasDiccionario, palabraUsuario) == True and len(palabraUsuario) == LARGO:
                         #revisionLetras(letrasCorrecta, letrasUsuario, correctas, incorrectas)
-                        gano = revision(palabraCorrecta, palabraUsuario, correctas, incorrectas, casi)
+                        gano = True
                     else:
                         msj = "Debes introducir una palabra que este dentro del diccionario y contenga 4 caracteres!"
                         palabraUsuarioNew = palabraUsuario.replace("\n","",)
@@ -86,7 +92,7 @@ def main():
         segundos = TIEMPO_MAX #- pygame.time.get_ticks()/1000
 
         #Limpiar pantalla anterior
-        screen.fill(COLOR_FONDO)
+        screen.blit(background, (0,0))
 
         #Dibujar de nuevo todo
         dibujar(screen, ListaDePalabrasUsuario, palabraUsuario, puntos, intentos, segundos, gano, correctas, incorrectas, casi)

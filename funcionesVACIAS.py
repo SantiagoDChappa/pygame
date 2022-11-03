@@ -39,9 +39,13 @@ def revision(palabraCorrecta, palabraUsuario, correctas, incorrectas, casi):
     palabraUsuario = palabraUsuario.replace('\n',"").lower()
     for letra in palabraCorrecta:
         letraVerificar = buscarLetra(palabraUsuario, letra)
-        if letraVerificar != "" and palabraCorrecta.index(letra) == palabraUsuario.index(letra) and palabraUsuario.index(letra) != -1:
+        if letraVerificar != "": #and palabraCorrecta.index(letra) == palabraUsuario.index(letra) and palabraUsuario.index(letra) != -1:
             correctas.append(letra)
             palabraCorrecta = palabraCorrecta.replace(letra, " ",1)
+        else:
+            incorrectas.append(letra)
+            palabraCorrecta = palabraCorrecta.replace(letra, " ",1)
+    return correctas, incorrectas
 
 
 #def revisionLetras(palabraCorrecta, palabraUser, correctas, incorrectas, casi):

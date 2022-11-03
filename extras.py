@@ -87,16 +87,22 @@ def dibujar(screen, listaDePalabrasUsuario, palabraUsuario, puntos, intentos, se
         ren = defaultFont.render("Tiempo: " + str(int(segundos)), 1, COLOR_TEXTO)
     screen.blit(ren, (10, 10))
 
-    #muestra las palabras anteriores, las que se fueron arriesgando
+    #muestra las palabras anteriores, las que se fueron arriesgando 
+    # VERSION 1
     pos = 0
     for palabra in listaDePalabrasUsuario:
-        if (len(incorrectas) > 0 and len(casi) > 0) or len(casi) > 0: 
-            screen.blit(defaultFontGrande.render(palabra, FALSE, COLOR_TEXTO_CASI), (ANCHO//2-len(palabra)*TAMANNO_LETRA_GRANDE//4,20 + 80 * pos))
-        elif len(incorrectas) > 0 and len(casi) == 0 and len(correctas) == 0:
-            screen.blit(defaultFontGrande.render(palabra, FALSE, COLOR_TEXTO_INCORRECTO), (ANCHO//2-len(palabra)*TAMANNO_LETRA_GRANDE//4,20 + 80 * pos))
-        else:
-            screen.blit(defaultFontGrande.render(palabra, FALSE, COLOR_TEXTO_CORRECTO), (ANCHO//2-len(palabra)*TAMANNO_LETRA_GRANDE//4,20 + 80 * pos))
+        screen.blit(defaultFontGrande.render(palabra, 1, COLOR_LETRAS), (ANCHO//2-len(palabra)*TAMANNO_LETRA_GRANDE//4,20 + 80 * pos))
         pos += 1
+    pos = 0
+    # VERSION 2
+    #for palabra in listaDePalabrasUsuario:
+        #if (len(incorrectas) > 0 and len(casi) > 0) or len(casi) > 0: 
+            #screen.blit(defaultFontGrande.render(palabra, FALSE, COLOR_TEXTO_CASI), (ANCHO//2-len(palabra)*TAMANNO_LETRA_GRANDE//4,20 + 80 * pos))
+        #elif len(incorrectas) > 0 and len(casi) == 0 and len(correctas) == 0:
+            #screen.blit(defaultFontGrande.render(palabra, FALSE, COLOR_TEXTO_INCORRECTO), (ANCHO//2-len(palabra)*TAMANNO_LETRA_GRANDE//4,20 + 80 * pos))
+        #else:
+            #screen.blit(defaultFontGrande.render(palabra, FALSE, COLOR_TEXTO_CORRECTO), (ANCHO//2-len(palabra)*TAMANNO_LETRA_GRANDE//4,20 + 80 * pos))
+        #pos += 1
 
     #muestra el abcdario, falta ponerle color a las letras
     abcdario = ["qwertyuiop", "asdfghjklm", "zxcvbnm"]
@@ -105,14 +111,10 @@ def dibujar(screen, listaDePalabrasUsuario, palabraUsuario, puntos, intentos, se
         x = 0
         for letra in abc:
             color = COLOR_LETRAS
-            screen.blit(defaultFont.render(letra, 1, color), (10 + x, ALTO/1.5 + y))
+            screen.blit(defaultFont.render(letra, 1, color), (20 + x, ALTO/2 + y))
             x += TAMANNO_LETRA
         y += TAMANNO_LETRA
 
-
-def dibujarAlerta(screen,msj):
-    defaultFont = pygame.font.Font( pygame.font.get_default_font(), TAMANNO_LETRA)
-    screen.blit(defaultFont.render(msj, FALSE, COLOR_TEXTO), (400, 100))
 
 
 
