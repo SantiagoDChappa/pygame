@@ -4,8 +4,6 @@ from configuracion import *
 import random
 import math
 
-
-
 def nuevaPalabra(lista):
     nuevaPalabra = lista[random.randint(0,len(lista))]
     return nuevaPalabra
@@ -37,24 +35,11 @@ def desestructurarPalabra(palabra):
 def revision(palabraCorrecta, palabraUsuario, correctas, incorrectas, casi):
     palabraCorrecta = palabraCorrecta.replace('\n',"").lower()
     palabraUsuario = palabraUsuario.replace('\n',"").lower()
-    for letra in palabraCorrecta:
-        letraVerificar = buscarLetra(palabraUsuario, letra)
-        if letraVerificar != "": #and palabraCorrecta.index(letra) == palabraUsuario.index(letra) and palabraUsuario.index(letra) != -1:
+    for i,letra in enumerate(palabraUsuario):
+        if palabraCorrecta[i] == palabraUsuario[i]:
             correctas.append(letra)
-            palabraCorrecta = palabraCorrecta.replace(letra, " ",1)
+        elif letra in palabraCorrecta:
+            casi.append(letra) 
         else:
             incorrectas.append(letra)
-            palabraCorrecta = palabraCorrecta.replace(letra, " ",1)
-    return correctas, incorrectas
-
-
-#def revisionLetras(palabraCorrecta, palabraUser, correctas, incorrectas, casi):
-    #for caracteres in palabraCorrecta:
-     #   for caracteresUser in palabraUser:
-      #      if caracteres == caracteresUser and palabraCorrecta.index(caracteres) == palabraUser.index(caracteresUser):
-       #         correctas += caracteresUser
-        #    elif caracteres == caracteresUser and palabraCorrecta.index(caracteres) != palabraUser.index(caracteresUser):
-         #       casi += caracteresUser
-          #  else:
-           #     incorrectas += caracteresUser
-    #return (correctas,casi,incorrectas)
+    return correctas,casi,incorrectas
