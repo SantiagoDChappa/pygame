@@ -15,7 +15,15 @@ def lectura(archivo, salida, largo):
             salida.append(palabra)
     return salida
 
+def lecturaPuntos(archivo, salida):
+    archivoPalabras = archivo.readlines()
+    for palabra in archivoPalabras:
+        salida.append(palabra)
+    return salida
+
 def buscarPalabra(lista, palabraUsuario):
+    if "\n" in palabraUsuario:
+        palabraUsuario.replace("\n","")
     for palabra in lista:
         if palabra == palabraUsuario:
             return True
@@ -26,18 +34,17 @@ def buscarLetra(palabra, elemento):
         if letra == elemento:
             return letra
 
-def desestructurarPalabra(palabra):
-    palabraDesarmada = []
-    for letra in palabra:
-        palabraDesarmada += letra
-    return palabraDesarmada
 
 def revision(palabraCorrecta, palabraUsuario, correctas, incorrectas, casi):
     palabraCorrecta = palabraCorrecta.replace('\n',"").lower()
     palabraUsuario = palabraUsuario.replace('\n',"").lower()
     for i,letra in enumerate(palabraUsuario):
         if palabraCorrecta[i] == palabraUsuario[i]:
-            correctas.append(letra)
+            if letra in casi:
+                casi.pop(casi.index(letra))
+                correctas.append(letra)
+            else:
+                correctas.append(letra)
         elif letra in palabraCorrecta:
             casi.append(letra) 
         else:

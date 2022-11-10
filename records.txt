@@ -1,0 +1,6 @@
+fulanito: 20
+player1: 43
+santi: 70
+pancho: 18
+gustavo: 225
+fede: 90
