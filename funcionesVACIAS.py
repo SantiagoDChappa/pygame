@@ -5,7 +5,8 @@ import random
 import math
 
 def nuevaPalabra(lista):
-    nuevaPalabra = lista[random.randint(0,len(lista))]
+    print(len(lista))
+    nuevaPalabra = lista[random.randrange(0,len(lista))]
     return nuevaPalabra
 
 def lectura(archivo, salida, largo):
@@ -15,24 +16,14 @@ def lectura(archivo, salida, largo):
             salida.append(palabra)
     return salida
 
-def lecturaPuntos(archivo, salida):
-    archivoPalabras = archivo.readlines()
-    for palabra in archivoPalabras:
-        salida.append(palabra)
-    return salida
-
 def buscarPalabra(lista, palabraUsuario):
     if "\n" in palabraUsuario:
-        palabraUsuario.replace("\n","")
+        palabraUsuario = palabraUsuario.replace("\n","")
     for palabra in lista:
-        if palabra == palabraUsuario:
+        palabraNew = palabra.replace("\n","")
+        if palabraNew == palabraUsuario:
             return True
     return False
-
-def buscarLetra(palabra, elemento):
-    for letra in palabra:
-        if letra == elemento:
-            return letra
 
 
 def revision(palabraCorrecta, palabraUsuario, correctas, incorrectas, casi):
