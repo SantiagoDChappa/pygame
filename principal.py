@@ -49,6 +49,8 @@ def recordsHistoricos():
         records = open("records.txt","r")
         for linea in records.readlines():
             if "\n" in linea:
+                #indice = linea.index(":")
+                #if letra[i + 1] != " "
                 record.append(linea[0:-1])
             else:
                 record.append(linea)
@@ -174,12 +176,24 @@ def game_over(screen, palabra):
                 game = True 
         fondoMatrix(palabra)
             
-
+def porTiempo(screen, puntos):
+    font = pygame.font.Font(pygame.font.get_default_font(), TAMANNO_LETRA) # Fuente
+    text = font.render("FELICIDADES, HAS OBTENIDO " + str(puntos) + "PUNTOS!", True, (255,255,255)) # Texto
+    center_x = (ANCHO // 2) - (text.get_width() // 2) # posicion text
+    center_y = (ALTO // 2) - (text.get_height() // 2)
+    game = False
+    
+    while game != True:
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                game = True 
+        screen.fill(BACKGROUND_COLOR)
+        screen.blit(text, [center_x, center_y])
 
 menu = pygame_menu.Menu('La palabra escondida...', 800, 600, theme = pygame_menu.themes.THEME_DARK)
 menu.add.text_input('Nombre: ', default='Fulanito', onchange=cambiarNombre)
 menu.add.text_input('Longitud: ', default="4", onchange=longitud)
-menu.add.selector('Modo: ', [('Colores', 1), ('Paises', 2), ('Avanzado', 3)], onchange=seleccionarDificultad)
+menu.add.selector('Modo: ', [('Facil = Colores', 1), ('Intermedio = Paises', 2), ('Dificil = Avanzado', 3), ("Extra = Solo por Tiempo", 4)], onchange=seleccionarDificultad)
 menu.add.button('Jugar', empezarJuego)
 menu.add.button('Puntajes Historicos', mostrarPuntajes)
 menu.add.button('Salir', pygame_menu.events.EXIT)
@@ -213,6 +227,7 @@ def main():
     correctas = []
     incorrectas = []
     casi = []
+    listRecord = []
     gano = False
     msjRepetido = False
     gameOver = False
@@ -221,57 +236,166 @@ def main():
         lemario = "lemarioColores.txt"
     elif DIFICULTAD[0] == 2:
         lemario = "lemarioPaises.txt"
-    elif DIFICULTAD[0] == 3:
+    elif DIFICULTAD[0] == 3 or DIFICULTAD[0] == 4:
         lemario = "lemarioAvanzado.txt"
 
+    if DIFICULTAD[0] == 4:
+        archivo = open(lemario,"r")
+        #lectura del diccionario
+        lecturaSinLargo(archivo, listaPalabrasDiccionario)
+        #elige una al azar
+        palabraCorrecta = nuevaPalabra(listaPalabrasDiccionario)
 
-    archivo = open(lemario,"r")
-    #lectura del diccionario
-    lectura(archivo, listaPalabrasDiccionario, LARGO[0])
-    print(lemario)
+        dibujarSinIntentos(screen, listaDePalabrasUsuario, palabraUsuario, palabraCorrecta, puntos, segundos, gano, correctas, incorrectas, casi)
+        print(palabraCorrecta)
 
-    #elige una al azar
-    palabraCorrecta = nuevaPalabra(listaPalabrasDiccionario)
+        while segundos > fps/1000:
+        # 1 frame cada 1/fps segundos
+            gameClock.tick(fps)
+            totaltime += gameClock.get_time()
 
-    intentos = 5
-    dibujar(screen, listaDePalabrasUsuario, palabraUsuario, puntos, intentos, segundos, gano, correctas, incorrectas, casi)
-    print(palabraCorrecta)
+            if True:
+                fps = 3
 
-    while segundos > fps/1000 and intentos > 0 and not gano:
-    # 1 frame cada 1/fps segundos
-        gameClock.tick(fps)
-        totaltime += gameClock.get_time()
+            #Buscar la tecla apretada del modulo de eventos de pygame
+            for e in pygame.event.get():
 
-        if True:
-            fps = 3
+                #QUIT es apretar la X en la ventana
+                if e.type == QUIT:
+                    pygame.quit()
+                    return()
 
-        #Buscar la tecla apretada del modulo de eventos de pygame
-        for e in pygame.event.get():
-
-            #QUIT es apretar la X en la ventana
-            if e.type == QUIT:
-                pygame.quit()
-                return()
-
-            #Ver si fue apretada alguna tecla
-            if e.type == KEYDOWN:
-                letra = dameLetraApretada(e.key)
-                palabraUsuario += letra #es la palabra que escribe el usuario
-                if e.key == K_BACKSPACE:
-                    palabraUsuario = palabraUsuario[0:len(palabraUsuario)-1]
-                if e.key == K_RETURN:
-                    palabraUsuario += "\n"
-                    #Verifica si la palabra del usuario esta en el lemario y cumple con la longitud
-                    if buscarPalabra(listaPalabrasDiccionario, palabraUsuario) == True and len(palabraUsuario) == LARGO[0]:
-                        # Verifica si la palabra del usuario no es repetida, es decir, ya ingreso en algun intento anterior
-                        if listaDePalabrasUsuario == [] or not buscarPalabra(listaDePalabrasUsuario, palabraUsuario):
-                            #Revisa las letras del usuario
-                            revision(palabraCorrecta, palabraUsuario, correctas, incorrectas, casi)
-                            if palabraUsuario == palabraCorrecta:
-                                puntos = (len(correctas)*50)
-                                gano = True
+                #Ver si fue apretada alguna tecla
+                if e.type == KEYDOWN:
+                    letra = dameLetraApretada(e.key)
+                    palabraUsuario += letra #es la palabra que escribe el usuario
+                    if e.key == K_BACKSPACE:
+                        palabraUsuario = palabraUsuario[0:len(palabraUsuario)-1]
+                    if e.key == K_RETURN:
+                        palabraUsuario += "\n"
+                        #Verifica si la palabra del usuario esta en el lemario y cumple con la longitud
+                        if buscarPalabra(listaPalabrasDiccionario, palabraUsuario) == True and len(palabraUsuario) == len(palabraCorrecta):
+                            # Verifica si la palabra del usuario no es repetida, es decir, ya ingreso en algun intento anterior
+                            if listaDePalabrasUsuario == [] or not buscarPalabra(listaDePalabrasUsuario, palabraUsuario):
+                                #Revisa las letras del usuario
+                                revision(palabraCorrecta, palabraUsuario, correctas, incorrectas, casi)
+                                if palabraUsuario == palabraCorrecta:
+                                    puntos = (len(correctas)*50)
+                                    palabraCorrecta = nuevaPalabra(listaPalabrasDiccionario)
+                                    palabraUsuarioNew = palabraUsuario.replace("\n","")
+                                    listaDePalabrasUsuario.append(palabraUsuarioNew)
+                                    palabraUsuario = ""
+                                    correctas = []
+                                    casi = []
+                                    incorrectas = []
+                                    print(palabraCorrecta)
+                                else:
+                                    puntos = (len(correctas)*50) + (len(casi)*25) - (len(incorrectas)* 10)
+                                    palabraUsuarioNew = palabraUsuario.replace("\n","")
+                                    listaDePalabrasUsuario.append(palabraUsuarioNew)
+                                    palabraUsuario = ""
+                                    print(palabraCorrecta)
                             else:
-                                puntos = (len(correctas)*50) + (len(casi)*25) - (len(incorrectas)* 10)
+                                puntos -= 15 
+                                palabraUsuarioNew = palabraUsuario.replace("\n","")
+                                listaDePalabrasUsuario.append(palabraUsuarioNew)
+                                palabraUsuario = ""
+                                print(palabraCorrecta)
+                        else:
+                            puntos -= 15 
+                            palabraUsuarioNew = palabraUsuario.replace("\n","")
+                            listaDePalabrasUsuario.append(palabraUsuarioNew)
+                            palabraUsuario = ""
+                            print(palabraCorrecta)
+
+                    
+
+                            
+
+
+            segundos = TIEMPO_MAX_2 - pygame.time.get_ticks()/1000
+            '''if msjRepetido:
+                segundosMsj = abs(10 - pygame.time.get_ticks()/1000)
+                defaultFont = pygame.font.Font( pygame.font.get_default_font(), TAMANNO_LETRA)
+                while segundosMsj > 0:
+                    # Imprimir mensaje durante un tiempo
+                    screen.blit(defaultFont.render("Has ingresado una palabra que ya has regresado", 1, COLOR_TEXTO), (680, 10))
+                segundosMsj = 0'''
+            
+            #Limpiar pantalla anterior
+            screen.fill(COLOR_FONDO)
+
+            #Dibujar de nuevo todo
+            dibujarSinIntentos(screen, listaDePalabrasUsuario, palabraUsuario, palabraCorrecta, puntos, segundos, gano, correctas, incorrectas, casi)
+           
+            pygame.display.flip()
+
+        #Fin del juego
+
+        
+        if segundos < 0:
+            porTiempo(screen, puntos)
+        """while 1:
+            #Esperar el QUIT del usuario
+            for e in pygame.event.get():
+                if e.type == QUIT:
+                    pygame.quit()
+                    return"""
+
+        archivo.close()
+    else:
+        archivo = open(lemario,"r")
+        #lectura del diccionario
+        lectura(archivo, listaPalabrasDiccionario, LARGO[0])
+        print(lemario)
+
+        #elige una al azar
+        palabraCorrecta = nuevaPalabra(listaPalabrasDiccionario)
+
+        intentos = 5
+        dibujar(screen, listaDePalabrasUsuario, palabraUsuario, puntos, intentos, segundos, gano, correctas, incorrectas, casi)
+        print(palabraCorrecta)
+
+        while segundos > fps/1000 and intentos > 0 and not gano:
+        # 1 frame cada 1/fps segundos
+            gameClock.tick(fps)
+            totaltime += gameClock.get_time()
+
+            if True:
+                fps = 3
+
+            #Buscar la tecla apretada del modulo de eventos de pygame
+            for e in pygame.event.get():
+
+                #QUIT es apretar la X en la ventana
+                if e.type == QUIT:
+                    pygame.quit()
+                    return()
+
+                #Ver si fue apretada alguna tecla
+                if e.type == KEYDOWN:
+                    letra = dameLetraApretada(e.key)
+                    palabraUsuario += letra #es la palabra que escribe el usuario
+                    if e.key == K_BACKSPACE:
+                        palabraUsuario = palabraUsuario[0:len(palabraUsuario)-1]
+                    if e.key == K_RETURN:
+                        palabraUsuario += "\n"
+                        #Verifica si la palabra del usuario esta en el lemario y cumple con la longitud
+                        if buscarPalabra(listaPalabrasDiccionario, palabraUsuario) == True and len(palabraUsuario) == LARGO[0]:
+                            # Verifica si la palabra del usuario no es repetida, es decir, ya ingreso en algun intento anterior
+                            if listaDePalabrasUsuario == [] or not buscarPalabra(listaDePalabrasUsuario, palabraUsuario):
+                                #Revisa las letras del usuario
+                                revision(palabraCorrecta, palabraUsuario, correctas, incorrectas, casi)
+                                if palabraUsuario == palabraCorrecta:
+                                    puntos = (len(correctas)*50)
+                                    gano = True
+                                else:
+                                    puntos = (len(correctas)*50) + (len(casi)*25) - (len(incorrectas)* 10)
+                                    palabraUsuarioNew = palabraUsuario.replace("\n","")
+                                    listaDePalabrasUsuario.append(palabraUsuarioNew)
+                                    palabraUsuario = ""
+                                    intentos -= 1
+                            else:
                                 palabraUsuarioNew = palabraUsuario.replace("\n","")
                                 listaDePalabrasUsuario.append(palabraUsuarioNew)
                                 palabraUsuario = ""
@@ -281,47 +405,47 @@ def main():
                             listaDePalabrasUsuario.append(palabraUsuarioNew)
                             palabraUsuario = ""
                             intentos -= 1
-                    else:
-                        palabraUsuarioNew = palabraUsuario.replace("\n","")
-                        listaDePalabrasUsuario.append(palabraUsuarioNew)
-                        palabraUsuario = ""
-                        intentos -= 1
-                        
+                            
 
 
-        segundos = TIEMPO_MAX - pygame.time.get_ticks()/1000
-        '''if msjRepetido:
-            segundosMsj = abs(10 - pygame.time.get_ticks()/1000)
-            defaultFont = pygame.font.Font( pygame.font.get_default_font(), TAMANNO_LETRA)
-            while segundosMsj > 0:
-                # Imprimir mensaje durante un tiempo
-                screen.blit(defaultFont.render("Has ingresado una palabra que ya has regresado", 1, COLOR_TEXTO), (680, 10))
-            segundosMsj = 0'''
+            segundos = TIEMPO_MAX - pygame.time.get_ticks()/1000
+            '''if msjRepetido:
+                segundosMsj = abs(10 - pygame.time.get_ticks()/1000)
+                defaultFont = pygame.font.Font( pygame.font.get_default_font(), TAMANNO_LETRA)
+                while segundosMsj > 0:
+                    # Imprimir mensaje durante un tiempo
+                    screen.blit(defaultFont.render("Has ingresado una palabra que ya has regresado", 1, COLOR_TEXTO), (680, 10))
+                segundosMsj = 0'''
+            
+            #Limpiar pantalla anterior
+            screen.fill(COLOR_FONDO)
+
+            #Dibujar de nuevo todo
+            dibujar(screen, listaDePalabrasUsuario, palabraUsuario, puntos, intentos, segundos, gano, correctas, incorrectas, casi)
+
+            pygame.display.flip()
+
+        #Fin del juego
+
         
-        #Limpiar pantalla anterior
-        screen.fill(COLOR_FONDO)
+        if intentos == 0 or segundos < 0:
+            game_over(screen, palabraCorrecta)
+        if gano == True:
+            # Escribo el puntaje
+            records = open("records.txt", "a")
+            records.write("\n")
+            records.write(NOMBRE[0]+": "+ str(puntos) +" puntos")
+            records.close()
+            fireworkWin(screen)
 
-        #Dibujar de nuevo todo
-        dibujar(screen, listaDePalabrasUsuario, palabraUsuario, puntos, intentos, segundos, gano, correctas, incorrectas, casi)
+        """while 1:
+            #Esperar el QUIT del usuario
+            for e in pygame.event.get():
+                if e.type == QUIT:
+                    pygame.quit()
+                    return"""
 
-        pygame.display.flip()
-
-    #Fin del juego
-
-    
-    if intentos == 0 or segundos < 0:
-        game_over(screen, palabraCorrecta)
-    if gano == True:
-        fireworkWin(screen)
-
-    """while 1:
-        #Esperar el QUIT del usuario
-        for e in pygame.event.get():
-            if e.type == QUIT:
-                pygame.quit()
-                return"""
-
-    archivo.close()
+        archivo.close()
 #Programa Principal ejecuta Main
 if __name__ == "__main__":
     menu.mainloop(surface)

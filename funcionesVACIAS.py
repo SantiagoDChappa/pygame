@@ -5,7 +5,6 @@ import random
 import math
 
 def nuevaPalabra(lista):
-    print(len(lista))
     nuevaPalabra = lista[random.randrange(0,len(lista))]
     return nuevaPalabra
 
@@ -14,6 +13,12 @@ def lectura(archivo, salida, largo):
     for palabra in archivoPalabras:
         if len(palabra) == largo:
             salida.append(palabra)
+    return salida
+
+def lecturaSinLargo(archivo, salida):
+    archivoPalabras = archivo.readlines()
+    for palabra in archivoPalabras:
+        salida.append(palabra)
     return salida
 
 def buscarPalabra(lista, palabraUsuario):

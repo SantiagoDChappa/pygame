@@ -4,3 +4,11 @@ santi: 70
 pancho: 18
 gustavo: 225
 fede: 90
+Fulanito: 200 puntos
+SANTIAGO: 300 puntos
+pancho: 18
+SANTIAGO: 300 puntos
+fede: 90
+pancho: 18
+Fulanito: 400 puntos
+Fede: 200 puntos

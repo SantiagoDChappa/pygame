@@ -65,7 +65,55 @@ def dameLetraApretada(key):
     else:
         return("")
 
+def dibujarSinIntentos(screen, listaDePalabrasUsuario, palabraUsuario, palabraCorrecta, puntos, segundos, gano,
+                correctas, incorrectas, casi):
+    defaultFont= pygame.font.Font( pygame.font.get_default_font(), TAMANNO_LETRA)
+    defaultFontGrande= pygame.font.Font( pygame.font.get_default_font(), TAMANNO_LETRA_GRANDE)
 
+    #Linea Horizontal
+    pygame.draw.line(screen, (255,255,255), (0, ALTO-70) , (ANCHO, ALTO-70), 5)
+
+    #muestra lo que escribe el jugador
+    screen.blit(defaultFont.render(palabraUsuario, 1, COLOR_TEXTO), (190, 570))
+    #muestra el puntaje
+    screen.blit(defaultFont.render("Puntos: " + str(puntos), 1, COLOR_TEXTO), (680, 10))
+
+    screen.blit(defaultFont.render("Pista: Contiene " + str(len(palabraCorrecta)-1) + " letras", 1, COLOR_TEXTO), (535, ALTO-95))
+    #muestra los segundos y puede cambiar de color con el tiempo
+    if(segundos<15):
+        ren = defaultFont.render("Tiempo: " + str(int(segundos)), 1, COLOR_TIEMPO_FINAL)
+    else:
+        ren = defaultFont.render("Tiempo: " + str(int(segundos)), 1, COLOR_TEXTO)
+    screen.blit(ren, (10, 10))
+
+    #muestra las palabras anteriores, las que se fueron arriesgando
+    if len(listaDePalabrasUsuario) > 0:
+        palabraNew = listaDePalabrasUsuario[len(listaDePalabrasUsuario)-1]
+        screen.blit(defaultFontGrande.render(palabraNew, 1, COLOR_LETRAS), (ANCHO//2-len(palabraNew)*TAMANNO_LETRA_GRANDE//4, 200))
+    #muestra el abcdario, falta ponerle color a las letras
+    abcdario = ["qwertyuiop", "asdfghjklñ", "zxcvbnm"]
+    y=0
+    for abc in abcdario:
+        x = 0
+        for letra in abc:
+            if letra in incorrectas:
+                color = COLOR_INCORRECTAS
+                screen.blit(defaultFont.render(letra, 1, color), (10 + x, ALTO/1.5 + y))
+                x += TAMANNO_LETRA
+            elif letra in casi:
+                color = COLOR_CASI
+                screen.blit(defaultFont.render(letra, 1, color), (10 + x, ALTO/1.5 + y))
+                x += TAMANNO_LETRA
+            elif letra in correctas:   
+                color = COLOR_CORRECTAS
+                screen.blit(defaultFont.render(letra, 1, color), (10 + x, ALTO/1.5 + y))
+                x += TAMANNO_LETRA
+            else:
+                color = (255,255,255)
+                screen.blit(defaultFont.render(letra, 1, color), (10 + x, ALTO/1.5 + y))
+                x += TAMANNO_LETRA
+        y += TAMANNO_LETRA
+    
 def dibujar(screen, listaDePalabrasUsuario, palabraUsuario, puntos, intentos,segundos, gano,
                 correctas, incorrectas, casi):
     defaultFont= pygame.font.Font( pygame.font.get_default_font(), TAMANNO_LETRA)
