@@ -177,30 +177,35 @@ def fondoMatrix(palabra):
                 salir = True
 
 def game_over(screen, palabra):
-    game = False
-    
     screen.fill((91,0,0))
-    while game != True:
-        for event in pygame.event.get():
-            if event.type == pygame.QUIT:
-                game = True 
-        fondoMatrix(palabra)
+    fondoMatrix(palabra) 
             
 def porTiempo(screen, puntos):
     font = pygame.font.Font(pygame.font.get_default_font(), TAMANNO_LETRA) # Fuente
-    text = font.render("FELICIDADES, HAS OBTENIDO " + str(puntos) + "PUNTOS!", True, (255,255,255)) # Texto
+    text = font.render("FELICIDADES, HAS OBTENIDO " + str(puntos) + " PUNTOS!", True, (255,255,255)) # Texto
     center_x = (ANCHO // 2) - (text.get_width() // 2) # posicion text
     center_y = (ALTO // 2) - (text.get_height() // 2)
     game = False
-    
-    screen.fill((91,0,0))
-    pygame.init()
+    os.environ['SDL_VIDEO_CENTERED'] = '1'
+    RES = ANCHO, ALTO
+    alpha_value = 0
+
+    pg.init()
+    screen = pg.display.set_mode(RES)
+    surface = pg.Surface(RES)
+    surface.set_alpha(alpha_value)
+    if puntos > 0:
+        screen.fill((18,70,0))
+    else:
+        screen.fill((91,0,0))
     screen.blit(text, [center_x, center_y])
 
     while game != True:
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 game = True 
+    
+        pygame.display.update()
 
 menu = pygame_menu.Menu('La palabra escondida...', 800, 600, theme = pygame_menu.themes.THEME_DARK)
 menu.add.text_input('Nombre: ', default='Player', onchange=cambiarNombre)
@@ -252,6 +257,7 @@ def main():
         lemario = "lemarioAvanzado.txt"
 
     if DIFICULTAD[0] == 4:
+        segundos = TIEMPO_MAX_2
         archivo = open(lemario,"r")
         #lectura del diccionario
         lecturaSinLargo(archivo, listaPalabrasDiccionario)
@@ -347,13 +353,16 @@ def main():
         
         if segundos < 0:
             porTiempo(screen, puntos)
+            print("segundos: ",segundos)
+        
         """while 1:
             #Esperar el QUIT del usuario
             for e in pygame.event.get():
                 if e.type == QUIT:
                     pygame.quit()
                     return"""
-
+        segundos = TIEMPO_MAX_2
+        print("segundos NASHEE: ",segundos)
         archivo.close()
     else:
         archivo = open(lemario,"r")

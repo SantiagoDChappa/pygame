@@ -18,3 +18,6 @@ Nashe: 350 puntos
 Player 3: 250 puntos
 Player 4: 300 puntos
 Player 5: 200 puntos
+Player 6: 200 puntos
+Player 7: 200 puntos
+Player 8: 200 puntos
