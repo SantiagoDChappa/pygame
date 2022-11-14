@@ -12,3 +12,9 @@ fede: 90
 pancho: 18
 Fulanito: 400 puntos
 Fede: 200 puntos
+Player: 300 puntos
+Player: 300 puntos
+Nashe: 350 puntos
+Player 2: 250 puntos
+Player 4: 300 puntos
+Player 5: 200 puntos

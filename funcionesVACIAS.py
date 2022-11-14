@@ -5,7 +5,8 @@ import random
 import math
 
 def nuevaPalabra(lista):
-    nuevaPalabra = lista[random.randrange(0,len(lista))]
+    cont = len(lista)
+    nuevaPalabra = lista[random.randrange(cont)]
     return nuevaPalabra
 
 def lectura(archivo, salida, largo):
@@ -30,6 +31,15 @@ def buscarPalabra(lista, palabraUsuario):
             return True
     return False
 
+def contarPalabras():
+    records = open("records.txt","r")
+    contador = 0
+    for linea in records.readlines():
+        if "Player" in linea:
+            contador += 1
+    records.close()
+    return contador
+    
 
 def revision(palabraCorrecta, palabraUsuario, correctas, incorrectas, casi):
     palabraCorrecta = palabraCorrecta.replace('\n',"").lower()

@@ -1,19 +1,24 @@
 #! /usr/bin/env python
-import os, random, sys, math, pygame_menu
+import math
+import os
+import random
+import sys
+
+import pygame_menu
 
 import pygame
-from pygame.locals import *
 from configuracion import *
 from extras import *
 from fireworkWin import *
 from funcionesVACIAS import *
 from matrix import *
+from pygame.locals import *
 
 pygame.init()
 surface = pygame.display.set_mode((800, 600))
 
 DIFICULTAD = [1]
-NOMBRE = ["Fulanito"]
+NOMBRE = ["Player"]
 LARGO = [5]
 
 def seleccionarDificultad(sinUso ,valor):
@@ -28,6 +33,11 @@ def cambiarNombre(nombre):
     NOMBRE[0] = nombre
 
 def empezarJuego():
+    contador = contarPalabras()
+    if LARGO[0] == '':
+        LARGO[0] = 5
+    if NOMBRE[0] == '' or NOMBRE[0].lower() == 'player':
+        NOMBRE[0] = 'Player ' + str(contador+1)
     main()
 
 def recordsHistoricos():
@@ -57,19 +67,18 @@ def recordsHistoricos():
         records.close()
 
         y=150
-        ren1 = defaultFont.render("Puntajes Históricos", 1, COLOR_INCORRECTAS)
+        ren1 = defaultFont.render("Puntajes Historicos", 1, COLOR_INCORRECTAS)
         screen.blit(ren1, (ANCHO//2-100, 100))
 
         k=0
         for i in range(len(record)-1,0,-1):
             k=k+1
             if k<=10:
-                ren2 = defaultFont.render(record[i], 1, COLOR_CORRECTAS)
+                ren2 = defaultFont.render(record[i], 1, COLOR_LETRAS)
                 screen.blit(ren2, (ANCHO//2-100, y))
                 y=y+35
 
         pygame.display.update()
-
 
 def mostrarPuntajes():
     recordsHistoricos()
@@ -144,10 +153,10 @@ def fondoMatrix(palabra):
     font = pg.font.Font('font/ms mincho.ttf', FONT_SIZE, bold=True)
     green_katakana = [font.render(char, True, (40, randrange(160, 256), 40)) for char in katakana]
     lightgreen_katakana = [font.render(char, True, pg.Color('lightgreen')) for char in katakana]
-
+    salir = False
     symbol_columns = [SymbolColumn(x, randrange(-ALTO, 0)) for x in range(0, ANCHO, FONT_SIZE)]
 
-    while True:
+    while salir != True:
         font = pygame.font.Font(pygame.font.get_default_font(), 30) # Fuente
         text = font.render(frase, True, (255,255,255)) # Texto
         center_x = (ANCHO // 2) - (text.get_width() // 2) # posicion text
@@ -155,7 +164,7 @@ def fondoMatrix(palabra):
         screen.blit(surface, (0, 0))
         surface.fill(pg.Color('black'))
         screen.blit(text, [center_x, center_y])
-
+        
         [symbol_column.draw() for symbol_column in symbol_columns]
 
         if not pg.time.get_ticks() % 20 and alpha_value < 170:
@@ -165,6 +174,10 @@ def fondoMatrix(palabra):
         [exit() for i in pg.event.get() if i.type == pg.QUIT]
         pg.display.flip()
         clock.tick(60)
+
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                salir = True
 
 def game_over(screen, palabra):
     game = False
@@ -183,12 +196,14 @@ def porTiempo(screen, puntos):
     center_y = (ALTO // 2) - (text.get_height() // 2)
     game = False
     
+    screen.fill((91,0,0))
+    pygame.init()
+    screen.blit(text, [center_x, center_y])
+
     while game != True:
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 game = True 
-        screen.fill(BACKGROUND_COLOR)
-        screen.blit(text, [center_x, center_y])
 
 menu = pygame_menu.Menu('La palabra escondida...', 800, 600, theme = pygame_menu.themes.THEME_DARK)
 menu.add.text_input('Nombre: ', default='Fulanito', onchange=cambiarNombre)
