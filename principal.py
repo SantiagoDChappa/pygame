@@ -80,9 +80,6 @@ def recordsHistoricos():
 
         pygame.display.update()
 
-def mostrarPuntajes():
-    recordsHistoricos()
-
 def fireworkWin(screen):
 
     fireworks = [Firework() for i in range(1)]  # create the first fireworks
@@ -206,11 +203,11 @@ def porTiempo(screen, puntos):
                 game = True 
 
 menu = pygame_menu.Menu('La palabra escondida...', 800, 600, theme = pygame_menu.themes.THEME_DARK)
-menu.add.text_input('Nombre: ', default='Fulanito', onchange=cambiarNombre)
+menu.add.text_input('Nombre: ', default='Player', onchange=cambiarNombre)
 menu.add.text_input('Longitud: ', default="4", onchange=longitud)
 menu.add.selector('Modo: ', [('Facil = Colores', 1), ('Intermedio = Paises', 2), ('Dificil = Avanzado', 3), ("Extra = Solo por Tiempo", 4)], onchange=seleccionarDificultad)
 menu.add.button('Jugar', empezarJuego)
-menu.add.button('Puntajes Historicos', mostrarPuntajes)
+menu.add.button('Puntajes Historicos', recordsHistoricos)
 menu.add.button('Salir', pygame_menu.events.EXIT)
 
 #Funcion principal
